@@ -1,0 +1,22 @@
+﻿@model Vidly.ViewModels.RandomMovieViewModel
+
+@{
+    ViewBag.Title = "ListCustomer";
+}
+
+@if( Model.Customers.Count==0)
+{
+ <p>No customer exist</p>
+}
+else
+{
+<ul>
+    @foreach (var customer in Model.Customers)
+    {
+        <li>
+             @Html.ActionLink(@customer.Name,"DisplayCustomer","Movie", new { id = customer.Id }))
+        </li>
+    }
+</ul>
+
+}

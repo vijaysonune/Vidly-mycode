@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<h2>test Ajax</h2>
+
+@Ajax.ActionLink("Get Customer List", "ListCustomer","Customer", new AjaxOptions
+                                       {
+                                          HttpMethod = "GET",
+                                          UpdateTargetId = "CustomerId",
+                                          InsertionMode = InsertionMode.Replace
+                                        })
+
+<span>|</span>
+
+@Ajax.ActionLink("Get Top 3 Customer", "Top3","Customer", new AjaxOptions
+                                       {
+                                          HttpMethod = "GET",
+                                          UpdateTargetId = "CustomerId",
+                                          InsertionMode = InsertionMode.Replace
+                                        })
+
+<span>|</span>
+
+<div id="CustomerId"></div>
