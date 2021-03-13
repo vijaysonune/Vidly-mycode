@@ -11,9 +11,13 @@ namespace Vidly.Models
         [KeyAttribute()]
         [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)]
         public int Id { get; set; }
+
         public Byte DurationInMonth { get; set; }
+
         public Byte Discount { get; set; }
+
         public Byte SignupFee { get; set; }
+
         [StringLength(50)]
         public string Name { get; set; }
 
