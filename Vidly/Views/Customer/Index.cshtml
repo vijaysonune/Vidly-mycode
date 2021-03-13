@@ -1,45 +1,69 @@
 ﻿@model IEnumerable<Vidly.Models.Customer>
-
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<h2>Index</h2>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-    <p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
-    <table class="table">
+<table id="customers" class="table">
+    <thead>
         <tr>
-           
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>Discount Rate</th>
-           
-           
+            <th>Delete</th>
         </tr>
-    
-    @foreach (var item in Model) {
-    <tr>
+    </thead>
 
-        <td>
-            @Html.ActionLink(item.Name, "Edit", new { id = item.Id })
-        </td>
-        <td>
-            @item.MembershipType.Name
-        </td>
-        
-    </tr>
+    @foreach (var item in Model)
+    {
+        <tbody>
+            <tr>
+                <td>
+                    @Html.ActionLink(item.Name, "Edit", new { id = item.Id })
+                </td>
+                <td>
+                    @item.MembershipType.Name
+                </td>
+                <td>
+                    <button data-customer-id=@item.Id id="btnDelete" class="btn-link js-delete">delete</button>
+                </td>
+            </tr>
+        </tbody>
     }
-    
-    </table>
-</body>
-</html>
+
+</table>
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+            $("#customers").DataTable();
+
+            $("#customers .js-delete").on("click", function (e) {
+                var button = $(this);
+                alert("you clicked button");
+                debugger;
+                e.preventDefault();
+                bootbox.alert("Are you sure want to delete this user?", function (result) {
+                    debugger;
+                    if (result) {
+                        $.ajax({
+                            url: "/api/Customers/" + button.attr("data-customer-id"),
+                            method: "Delete",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+
+                    }
+
+                });
+            });
+        });
+    </script>
+
+}

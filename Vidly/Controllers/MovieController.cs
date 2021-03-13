@@ -30,60 +30,55 @@ namespace Vidly.Controllers
         {
             var models = _Context.Movies.ToList();
 
-                   
-
             return View(models);
         }
 
-        public ActionResult Random()
+
+
+        [HttpGet]
+        public ActionResult NewMovie()
         {
-            var movie = new Movie() { Name = "Life Of PI" };
-            var customers = new List<Customer>
-            { new Customer{Name="Customer 1"},
-              new Customer{Name="Customer 2"}
+
+
+            var genretypes = _Context.GenreTypes.ToList();
+            AddMovieViewModel viewModel = new AddMovieViewModel
+            {
+                GenreTypes = genretypes
             };
 
-            var viewModel = new RandomMovieViewModel
-            {
-                Movie = movie,
-                Customers = customers
-            };
+
             return View(viewModel);
         }
 
-
-        [Route("/movies/ReleaseByDate/{year}/{month}")]
-        public ActionResult ByReleaseDate(int year,int month)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SaveMovie(AddMovieViewModel viewModel)
         {
-            return Content(year +"/"+ month);
-        }
-
-        public ActionResult ListCustomer()
-        {
-            var customers = new List<Customer>
-            { new Customer{Name="Vijay",Id=1},
-              new Customer{Name="Abhi",Id=2},
-              new Customer{Name="Sonu",Id=3}
-            };
-            var viewModel = new RandomMovieViewModel
+            if (!ModelState.IsValid)
             {
-                Customers = customers
-            };
-            return View(viewModel);
-        }
+                var model = new AddMovieViewModel
+                {
+                    Movie = viewModel.Movie,
+                    GenreTypes = _Context.GenreTypes.ToList()
+                };
+                return View("NewMovie", model);
+            }
+            if (viewModel.Movie.Id == 0)
+            {
+                _Context.Movies.Add(viewModel.Movie);
 
-        public ActionResult ListMovie()
-        {
-            var movie = new Movie() { Name = "Life Of PI", Id=1 };
+            }
+            else
+            {
+                var movieInDb = _Context.Movies.Where(x => x.Id == viewModel.Movie.Id).SingleOrDefault();
+                movieInDb.Name = viewModel.Movie.Name;
+                movieInDb.ReleaseDate = viewModel.Movie.ReleaseDate;
+                movieInDb.GenreType_Id = viewModel.Movie.GenreType_Id;
+                movieInDb.InStock = viewModel.Movie.InStock;
+            }
+            _Context.SaveChanges();
 
-            return View(movie);
-        }
-
-        public ActionResult DisplayCustomer(int id)
-        {
-            //var cutomer = from cust in RandomMovieViewModel where cust.Cutomer.Id = id select cust;
-
-            return View();
+            return RedirectToAction("Index", "Movie");
         }
     }
 }
